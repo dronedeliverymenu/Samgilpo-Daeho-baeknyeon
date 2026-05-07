@@ -85,6 +85,26 @@
   .tab { flex: 1 1 auto; min-width: 70px; font-weight: 600; border: none; cursor: pointer; text-align: center; }
   .tabs-wrap { position: sticky; top: 0; z-index: 10; }
 
+  /* 좌대 선택 오버레이 */
+  .overlay {
+    position: fixed; inset: 0; background: #5bb8f5;
+    z-index: 200; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 2rem;
+  }
+  .overlay h2 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .overlay p { color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 2rem; }
+  .zoodae-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 340px; }
+  .zoodae-btn {
+    background: #fff; border: none; border-radius: 14px;
+    padding: 1.75rem 1rem; font-size: 20px; font-weight: 700;
+    color: #1a1a2e; cursor: pointer; text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .zoodae-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .zoodae-btn span { display: block; font-size: 28px; margin-bottom: 6px; }
+  .overlay.hidden { display: none; }
+
   /* 가게 차단 모달 */
   .block-modal-bg {
     position: fixed; inset: 0; background: rgba(0,0,0,0.5);
@@ -265,9 +285,27 @@
   </div>
 </div>
 
+<!-- 좌대 선택 오버레이 -->
+<div class="overlay" id="overlay">
+  <h2>어디 좌대에 계신가요?</h2>
+  <p>좌대를 선택하면 메뉴가 표시됩니다</p>
+  <div class="zoodae-grid">
+    <button class="zoodae-btn" onclick="selectZoodae('대호좌대')">
+      <span>🎣</span>대호좌대
+    </button>
+    <button class="zoodae-btn" onclick="selectZoodae('백년좌대')">
+      <span>🎣</span>백년좌대
+    </button>
+  </div>
+</div>
+
 <div class="hero">
-  <h1>대호좌대 드론배달</h1>
+  <h1 id="heroTitle">드론배달</h1>
   <p>낚시용품 · 카페 · 식사</p>
+  <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+    <p id="zoodaeLabel" style="color:#fff; font-size:18px; font-weight:700;"></p>
+    <button onclick="changeZoodae()" id="zoodaeChangeBtn" style="display:none; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.5); border-radius:6px; color:#fff; font-size:12px; padding:4px 10px; cursor:pointer;">좌대 변경</button>
+  </div>
   <p class="hero-note">
     매주 금 · 토 · 일 10:00~17:00 (우천시 배송불가)
   </p>
@@ -387,7 +425,19 @@
 
 <script>
 let cart = {};
-let selectedZoodae = '대호좌대';
+let selectedZoodae = '';
+
+function selectZoodae(name) {
+  selectedZoodae = name;
+  document.getElementById('overlay').classList.add('hidden');
+  document.getElementById('zoodaeLabel').textContent = '📍 ' + name;
+  document.getElementById('heroTitle').textContent = name + ' 드론배달';
+  document.getElementById('zoodaeChangeBtn').style.display = 'inline-block';
+}
+
+function changeZoodae() {
+  document.getElementById('overlay').classList.remove('hidden');
+}
 let pendingItem = null;
 let knownStores = new Set();
 
