@@ -695,8 +695,18 @@ function proceedOrder() {
 
 function doOrder() {
   copyCart();
+  const keys = Object.keys(cart);
+  const hasBait = keys.some(k => getItemStore(k) === 'bait');
+  let kakaoUrl = 'http://pf.kakao.com/_TUXxhX/chat';
+  if (hasBait) {
+    if (selectedZoodae === '대호좌대') {
+      kakaoUrl = 'https://open.kakao.com/o/pXYP06ti';
+    } else if (selectedZoodae === '백년좌대') {
+      kakaoUrl = 'https://open.kakao.com/o/pN0x16ti';
+    }
+  }
   setTimeout(() => {
-    window.open('http://pf.kakao.com/_TUXxhX/chat', '_blank');
+    window.open(kakaoUrl, '_blank');
   }, 300);
 }
 
